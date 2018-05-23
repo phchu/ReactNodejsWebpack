@@ -13,15 +13,6 @@ const app = express();
 const PORT = process.env.NODE_ENV !== 'development' ? 3000 : 8080;
 const server = app.listen(PORT, () => console.log(`Listening on PORT ${PORT}!`));
 
-// [START] for bottender message
-app.use(
-    bodyParser.json({
-        verify: (req, res, buf) => {
-            req.rawBody = buf.toString();
-        },
-    })
-);
-// [END] for bottender message
 app.use(bodyParser.json({
     limit: '10mb'
 }));
@@ -67,16 +58,5 @@ app.use((req, res, next) => {
 if (app.get('env') === 'development') {
     app.use(errorHandler());
 }
-
-// production error handler
-// no stacktraces leaked to user
-app.use((err, req, res, next) => {
-    res.status(err.status || 500);
-    //res.redirect('/');
-    res.render('errhandle/error', {
-        message: err.message,
-        error: {}
-    });
-});
 
 module.exports = app;

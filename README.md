@@ -1,9 +1,10 @@
 ## Full Stack Web Application using React, Node.js, Express with Webpack and Babel
-The is a template project for full stack development with React and Node.js.
+This is a template project for full stack development with React and Node.js. Javascript ES6 and ES7 syntax are also supported in this project.
 ### Key Features
 #### Frontend
 - React
 - [Ant Design](https://ant.design/)
+- [React Font Awesome](https://github.com/andreypopp/react-fa)
 #### Backend
 - Node.js
 - Express
