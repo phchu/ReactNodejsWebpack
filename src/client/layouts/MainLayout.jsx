@@ -15,9 +15,11 @@ const ORG_ABBR = _.chain(ORG_NAME).head().toUpper().value();
 class MainLayout extends Component {
     constructor() {
         super();
+        const { pathname } = window.location;
+        const path = _.words(pathname, /[^\/]+/g);
         this.state = {
             collapsed: false,
-            path: [CONFIG.NAME, PERMISSION.NAME]
+            path
         };
         this.handleClick = this.handleClick.bind(this);
     }
