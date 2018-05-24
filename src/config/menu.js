@@ -1,6 +1,6 @@
 class MenuItem {
-    constructor(url, alias, name, icon) {
-        this.url = url;
+    constructor(name, alias, icon) {
+        this.url = `/${name}`;
         this.alias = alias;
         this.name = name;
         this.icon = icon;
@@ -17,14 +17,15 @@ class MenuItem {
         return info;
     }
     addSubItem(item) {
+        item.URL = `${this.url}${item.URL}`;
         this
             .subMenu
             .push(item);
     }
 }
 
-let CONFIG = new MenuItem('/config', 'Configuration', 'config', 'tool');
-const PERMISSION = new MenuItem('/config', 'Permission', 'permission', 'right').getInfo();
+let CONFIG = new MenuItem('config', 'Configuration', 'config', 'tool');
+const PERMISSION = new MenuItem('permission', 'Permission', 'right').getInfo();
 CONFIG.addSubItem(PERMISSION);
 CONFIG = CONFIG.getInfo();
 
