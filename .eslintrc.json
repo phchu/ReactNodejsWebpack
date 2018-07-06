@@ -11,6 +11,10 @@
     "no-console": "off",
     "comma-dangle": "off",
     "react/jsx-filename-extension": "off",
-    "react/forbid-prop-types": "off"
+    "react/forbid-prop-types": "off",
+    "indent": [
+      2,
+      2
+    ]
   }
 }
