@@ -1,21 +1,17 @@
-import { Route, Router } from 'react-router-dom';
-
-import App from './App'
+import { Switch, Router } from 'react-router-dom';
 import React from 'react';
 import ReactDOM from 'react-dom';
+import createBrowserHistory from 'history/createBrowserHistory';
 
-let history;
-if (typeof window !== 'undefined') {
-    const createBrowserHistory = require('history/createBrowserHistory').default;
-    history = createBrowserHistory()
-}
+import LazyRoute from './components/Basic/LazyRoute';
 
+const history = createBrowserHistory();
 ReactDOM.render(
-    <Router history={history}>
-        <div>
-            <Route exact path="/" component={App} />
-            <Route path="/app" component={App} />
-        </div>
-    </Router>
-    , document.getElementById('root')
+  <Router history={history}>
+    <Switch>
+      <LazyRoute exact path="/" component={() => import('./App')} />
+      <LazyRoute exact path="/App" component={() => import('./App')} />
+    </Switch>
+  </Router>
+  , document.getElementById('root')
 );

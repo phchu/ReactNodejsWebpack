@@ -1,8 +1,8 @@
 const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const CleanWebpackPlugin = require('clean-webpack-plugin');
-const nodeExternals = require('webpack-node-externals');
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
+
 const DIST = path.join(__dirname, 'dist');
 
 module.exports = {
@@ -10,8 +10,15 @@ module.exports = {
   entry: './src/client/index.js',
   output: {
     path: DIST,
-    filename: 'client.bundle.js',
+    filename: '[name].bundle.js',
+    chunkFilename: '[name].chunk.js',
     publicPath: '/'
+  },
+  node: {
+    console: false,
+    fs: 'empty',
+    net: 'empty',
+    tls: 'empty'
   },
   module: {
     rules: [
@@ -86,6 +93,6 @@ module.exports = {
       template: './public/index.html',
       favicon: './public/favicon.ico',
     }),
-    new ExtractTextPlugin("assets/css/[hash:8]-[name].css")
+    new ExtractTextPlugin({ filename: 'assets/css/[hash:8]-[name].css', allChunks: true })
   ]
 };
