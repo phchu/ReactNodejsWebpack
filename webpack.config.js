@@ -2,10 +2,12 @@ const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const CleanWebpackPlugin = require('clean-webpack-plugin');
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
+const WebpackAutoInject = require('webpack-auto-inject-version');
 const CompressionPlugin = require('compression-webpack-plugin');
 const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
 
 const DIST = path.join(__dirname, 'dist', 'public');
+const dateFormat = 'mmddhhMM';
 
 module.exports = {
   name: 'client',
@@ -113,6 +115,24 @@ module.exports = {
       favicon: './public/favicon.ico',
     }),
     new ExtractTextPlugin({ filename: 'assets/css/[hash:8]-[name].css', allChunks: true }),
+    new WebpackAutoInject({
+      PACKAGE_JSON_PATH: './package.json',
+      SHORT: 'VER',
+      components: {
+        AutoIncreaseVersion: true,
+        InjectAsComment: true,
+        InjectByTag: false
+      },
+      componentsOptions: {
+        AutoIncreaseVersion: {
+          runInWatchMode: false // it will increase version with every single build!
+        },
+        InjectAsComment: {
+          tag: 'v{version} (build{date})',
+          dateFormat
+        }
+      }
+    }),
     new CompressionPlugin()
   ]
 };
