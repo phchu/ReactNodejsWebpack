@@ -1,4 +1,5 @@
 import bodyParser from 'body-parser';
+import compression from 'compression';
 import cookieParser from 'cookie-parser';
 import errorHandler from 'errorhandler';
 import express from 'express';
@@ -24,18 +25,14 @@ app.use(express.static('dist'));
 app.use(logger('dev'));
 
 app.use(cookieParser());
-app.use((req, res, next) => {
-  // req.user = {_id: '5840e3481ee48c1a3d68aaaa'}; //temp: set dev admin user._id
-  res.locals.login = req.isAuthenticated();
-  res.locals.user = req.user;
-  next();
-});
 
 app.use('/api', api);
 
 if (process.env.NODE_ENV !== 'development') {
+  app.use(compression());
+  app.use(express.static('public'));
   app.get('*', (req, res) => {
-    const filePath = './dist/index.html';
+    const filePath = './public/index.html';
     const index = path.resolve(filePath);
     res.sendFile(index);
   });
