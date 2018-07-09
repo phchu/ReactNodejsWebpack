@@ -12,7 +12,6 @@ const LazyRoute = (props) => {
       if (isLoading) {
         return Loading;
       } else if (error) {
-        console.log(error);
         return <div>Sorry, there was a problem loading the page.</div>;
       } return null;
     }
@@ -23,8 +22,12 @@ const LazyRoute = (props) => {
 
 export default LazyRoute;
 
+LazyRoute.defaultProps = {
+  isLoading: true,
+  error: null
+};
 LazyRoute.propTypes = {
-  component: PropTypes.element.isRequired,
-  isLoading: PropTypes.bool.isRequired,
-  error: PropTypes.object.isRequired
+  component: PropTypes.func.isRequired,
+  isLoading: PropTypes.bool,
+  error: PropTypes.object
 };

@@ -136,7 +136,7 @@ class MainLayout extends Component {
 }
 
 MainLayout.propTypes = {
-  children: PropTypes.array.isRequired
+  children: PropTypes.object.isRequired
 };
 
 module.exports = MainLayout;
