@@ -5,7 +5,9 @@ const ExtractTextPlugin = require('extract-text-webpack-plugin');
 const WebpackAutoInject = require('webpack-auto-inject-version');
 const CompressionPlugin = require('compression-webpack-plugin');
 const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
+const webpackBundleAnalyzer = require('webpack-bundle-analyzer');
 
+const { BundleAnalyzerPlugin } = webpackBundleAnalyzer;
 const DIST = path.join(__dirname, 'dist', 'public');
 const dateFormat = 'mmddhhMM';
 
@@ -133,6 +135,7 @@ module.exports = {
         }
       }
     }),
-    new CompressionPlugin()
+    new CompressionPlugin(),
+    new BundleAnalyzerPlugin()
   ]
 };
