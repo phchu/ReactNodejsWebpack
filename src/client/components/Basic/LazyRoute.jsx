@@ -3,17 +3,19 @@ import Loadable from 'react-loadable';
 import PropTypes from 'prop-types';
 import React from 'react';
 
-import Loading from './PageLoading';
+import PageLoading from './PageLoading';
 
 const LazyRoute = (props) => {
   const component = Loadable({
     loader: props.component,
     loading: ({ isLoading, error }) => {
       if (isLoading) {
-        return Loading;
+        return <PageLoading />;
       } else if (error) {
+        console.error(error);
         return <div>Sorry, there was a problem loading the page.</div>;
-      } return null;
+      }
+      return null;
     }
   });
 

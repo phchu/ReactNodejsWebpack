@@ -1,5 +1,9 @@
 {
   "parser": "babel-eslint",
+  "parserOptions": {
+    "sourceType": "module",
+    "allowImportExportEverywhere": true
+  },
   "extends": [
     "airbnb"
   ],
@@ -10,11 +14,21 @@
   "rules": {
     "no-console": "off",
     "comma-dangle": "off",
-    "react/jsx-filename-extension": "off",
     "react/forbid-prop-types": "off",
-    "indent": [
-      2,
-      2
-    ]
+    "react/jsx-filename-extension": [
+      1,
+      {
+        "extensions": [
+          ".js",
+          ".jsx"
+        ]
+      }
+    ],
+    "import/no-named-as-default-member": "off",
+    "import/no-named-as-default": "off",
+    "import/no-extraneous-dependencies": "off",
+    "no-unused-expressions": "off",
+    "indent": "off",
+    "template-curly-spacing": "off"
   }
 }

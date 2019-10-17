@@ -1,20 +1,30 @@
 {
   "presets": [
-    "env",
-    "es2015",
-    "react",
-    "es2017",
-    "stage-2"
+    "@babel/preset-env",
+    "@babel/preset-react"
   ],
   "plugins": [
-    "transform-runtime",
+    [
+      "@babel/plugin-transform-runtime",
+      {
+        "helpers": false,
+        "regenerator": true
+      }
+    ],
+    [
+      "@babel/plugin-proposal-class-properties",
+      {
+        "loose": true
+      }
+    ],
     [
       "import",
       {
         "libraryName": "antd",
-        "libraryDirectory": "es",
+        "libraryDirectory": "lib",
         "style": "css"
-      }
+      },
+      "ant"
     ]
   ]
 }

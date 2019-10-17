@@ -1,8 +1,9 @@
-import { Spin } from 'antd';
 import React from 'react';
 
+import '../../assets/styles/loading.css';
+
 const PageLoading = () => (
-  <div className="redirect-url"><Spin tip="頁面載入中..." size="large" /></div>
+  <div className="loader" />
 );
 
 export default PageLoading;

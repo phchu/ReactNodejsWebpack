@@ -1,6 +1,7 @@
 import { Icon } from 'react-fa';
 import React from 'react';
-import logo from '../images/index.jpg';
+
+import logo from '../assets/images/index.jpg';
 
 const Default = () => (
   <div>
