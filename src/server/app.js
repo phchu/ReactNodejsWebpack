@@ -1,17 +1,23 @@
+import { } from 'dotenv/config';
 import bodyParser from 'body-parser';
 import compression from 'compression';
 import cookieParser from 'cookie-parser';
 import errorHandler from 'errorhandler';
 import express from 'express';
 import logger from 'morgan';
+import mongoose from 'mongoose';
 import path from 'path';
 
 import api from './api/index';
 
 const app = express();
-
 const PORT = process.env.NODE_ENV !== 'development' ? 3000 : 8080;
 app.listen(PORT, () => console.log(`Listening on PORT ${PORT}!`));
+
+mongoose
+  .connect(process.env.MONGO_URL, { useNewUrlParser: true, useUnifiedTopology: true })
+  .then(() => console.log('DB connected success.'))
+  .catch(err => console.error('[ERROR]DB: ', err));
 
 app.use(bodyParser.json({
   limit: '10mb'

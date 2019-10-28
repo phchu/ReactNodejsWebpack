@@ -23,8 +23,9 @@
   "license": "ISC",
   "private": true,
   "dependencies": {
+    "@hapi/joi": "^16.1.7",
     "antd": "^3.24.0",
-    "bcrypt-nodejs": "0.0.3",
+    "bcryptjs": "^2.4.3",
     "body-parser": "~1.18.2",
     "bottleneck": "^2.3.0",
     "compression": "^1.7.2",
@@ -32,6 +33,7 @@
     "cookie-parser": "~1.4.3",
     "cron-parser": "^2.5.0",
     "csurf": "^1.9.0",
+    "dotenv": "^8.2.0",
     "errorhandler": "^1.5.0",
     "express": "^4.16.3",
     "express-session": "^1.13.0",

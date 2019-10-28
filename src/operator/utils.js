@@ -9,13 +9,12 @@ import moment from 'moment';
  * @returns 回傳結果
  */
 function wrapResult(result = null, errCode = null) {
-  const err = _.get(result, 'err');
-  const isError = !_.isNil(err);
+  const err = result instanceof Error;
   const wrappedResult = {
-    err: isError,
+    err,
     // errCode: isError ? (!_.isNil(errCode) ? errCode.code : err.code) : undefined,
-    errMsg: isError ? err : undefined,
-    data: !isError ? result : undefined
+    errMsg: err ? _.get(result, 'message') : undefined,
+    data: !err ? result : undefined
   };
   return wrappedResult;
 }
@@ -28,8 +27,7 @@ const removeEmpty = (obj) => {
 };
 
 function momentFormat(date, format = 'YYYY/MM/DD HH:mm') {
-  if (!(date instanceof Date))
-    {date = new Date(date);}
+  if (!(date instanceof Date)) { date = new Date(date); }
   return moment(date).utcOffset('+08:00').format(format);
 }
 
