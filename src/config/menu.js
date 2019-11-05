@@ -28,7 +28,7 @@ class MenuItem {
   }
 }
 
-const config = new MenuItem('config', 'Configuration', 'config', 'tool');
+const config = new MenuItem('config', 'Configuration', 'setting');
 const PERMISSION = new MenuItem('permission', 'Permission', 'right').getInfo();
 config.addSubItem(PERMISSION);
 const CONFIG = config.getInfo();

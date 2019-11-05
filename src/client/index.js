@@ -1,6 +1,12 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 
+import { StoreProvider } from './store';
 import Routes from './routes';
 
-ReactDOM.render(<Routes />, document.getElementById('root'));
+ReactDOM.render(
+  <StoreProvider>
+    <Routes />
+  </StoreProvider>
+  , document.getElementById('root')
+);
