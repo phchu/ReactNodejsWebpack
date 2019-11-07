@@ -94,7 +94,8 @@ module.exports = {
     disableHostCheck: true,
     historyApiFallback: true,
     proxy: {
-      '/api': 'http://localhost:8080'
+      context: ['/graphql', '/api'],
+      target: 'http://localhost:8080'
     }
   },
   optimization: {

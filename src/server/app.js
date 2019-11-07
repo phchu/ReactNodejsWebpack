@@ -9,10 +9,16 @@ import mongoose from 'mongoose';
 import path from 'path';
 
 import api from './api/index';
+import createApolloServer from './apollo-server';
+import models from './models';
+import resolvers from './resolvers';
+import schema from './schema';
 
 const app = express();
 const PORT = process.env.NODE_ENV !== 'development' ? 3000 : 8080;
-app.listen(PORT, () => console.log(`Listening on PORT ${PORT}!`));
+// Create a Apollo Server
+const server = createApolloServer(schema, resolvers, models);
+server.applyMiddleware({ app, path: '/graphql' });
 
 mongoose
   .connect(process.env.MONGO_URL, { useNewUrlParser: true, useUnifiedTopology: true })
@@ -58,5 +64,4 @@ app.use((req, res, next) => {
 if (app.get('env') === 'development') {
   app.use(errorHandler());
 }
-
-export default app;
+app.listen(PORT, () => console.log(`🚀 API ready at ${PORT}`));

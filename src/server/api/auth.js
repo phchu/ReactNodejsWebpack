@@ -5,7 +5,7 @@ import jwt from 'jsonwebtoken';
 
 import { signInValidation, signUpValidation } from '../validation/auth';
 import { wrapResult } from '../../operator/utils';
-import User from '../../models/User';
+import User from '../models/User';
 import verifyToken from './verifyToken';
 
 const app = express.Router();

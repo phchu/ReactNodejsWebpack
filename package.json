@@ -25,6 +25,7 @@
   "dependencies": {
     "@hapi/joi": "^16.1.7",
     "antd": "^3.24.0",
+    "apollo-server-express": "^2.9.7",
     "axios": "^0.19.0",
     "bcryptjs": "^2.4.3",
     "body-parser": "~1.18.2",
@@ -39,6 +40,8 @@
     "express": "^4.16.3",
     "express-session": "^1.13.0",
     "express-validator": "^2.20.8",
+    "graphql": "^14.5.8",
+    "graphql-tools": "^4.0.6",
     "history": "^4.7.2",
     "jsonfile": "^4.0.0",
     "jsonwebtoken": "^8.2.1",
