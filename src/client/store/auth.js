@@ -22,7 +22,7 @@ export const authReducer = (state = authInitialState, action) => {
   switch (type) {
     case SIGN_OUT:
       localStorage.removeItem('token');
-      break;
+      return true;
     case SIGN_UP:
     case SET_AUTH_USER:
       return {

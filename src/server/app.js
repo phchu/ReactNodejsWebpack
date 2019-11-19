@@ -8,7 +8,6 @@ import logger from 'morgan';
 import mongoose from 'mongoose';
 import path from 'path';
 
-import api from './api/index';
 import createApolloServer from './apollo-server';
 import models from './models';
 import resolvers from './resolvers';
@@ -37,8 +36,6 @@ app.use(express.static('dist'));
 app.use(logger('dev'));
 
 app.use(cookieParser());
-
-app.use('/api', api);
 
 if (process.env.NODE_ENV !== 'development') {
   app.use(compression());

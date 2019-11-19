@@ -40,7 +40,7 @@ const Mutation = {
   /**
    * Signs in user
    *
-   * @param {string} emailOrUsername
+   * @param {string} email
    * @param {string} password
    */
   signin: async (root, { input: { email, password } }, { User }) => {
