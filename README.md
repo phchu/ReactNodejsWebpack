@@ -1,4 +1,4 @@
-## Full Stack Web Application using React, Node.js, Express with Webpack and Babel
+## Full Stack Web Application using React, Node.js, Express, Apollo GraphQL with Webpack and Babel
 
 This is a template project for full stack development with React and Node.js. Javascript ES6 and ES7 syntax are also supported in this project.
 
@@ -9,12 +9,14 @@ This is a template project for full stack development with React and Node.js. Ja
 - React
 - [Ant Design](https://ant.design/)
 - [React Font Awesome](https://github.com/andreypopp/react-fa)
+- [Apollo Client](https://www.apollographql.com/docs/react/)
 
 #### Backend
 
 - Node.js
 - Express
 - [PM2](http://pm2.keymetrics.io/)
+- [Apollo Server with Express.js](https://www.apollographql.com/docs/apollo-server/v1/servers/express/)
 
 #### Compile
 
@@ -24,6 +26,19 @@ This is a template project for full stack development with React and Node.js. Ja
 ---
 
 ### Quick Start
+#### Create enviornment variables config for webpack
+ - **_.dev.env_**: config for _development_ environment
+ - **_.prod.env_**: config for _production_ environment
+```
+# development or production
+NODE_ENV=
+
+# MongoDB URL
+MONGO_URL=
+
+# Secret
+TOKEN_SECRET=
+```
 
 #### Install NPM packages
 

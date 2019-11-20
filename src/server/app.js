@@ -1,4 +1,3 @@
-import { } from 'dotenv/config';
 import bodyParser from 'body-parser';
 import compression from 'compression';
 import cookieParser from 'cookie-parser';
@@ -20,8 +19,11 @@ const server = createApolloServer(schema, resolvers, models);
 server.applyMiddleware({ app, path: '/graphql' });
 
 mongoose
-  .connect(process.env.MONGO_URL, { useNewUrlParser: true, useUnifiedTopology: true })
-  .then(() => console.log('DB connected success.'))
+  .connect(
+    process.env.MONGO_URL,
+    { useCreateIndex: true, useNewUrlParser: true, useUnifiedTopology: true }
+  )
+  .then(() => console.log('🗄️ DB connected success.'))
   .catch(err => console.error('[ERROR]DB: ', err));
 
 app.use(bodyParser.json({
