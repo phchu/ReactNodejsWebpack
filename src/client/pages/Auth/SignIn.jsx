@@ -62,7 +62,7 @@ const LoginForm = ({
                 </FormItem>
                 <FormItem>
                   {getFieldDecorator('password', {
-                    rules: [{ required: true, message: 'Please input your password!', len: 6 }],
+                    rules: [{ required: true, message: 'Please input your password!', min: 6 }],
                   })(<Input prefix={<Icon type="lock" style={{ color: 'rgba(0,0,0,.25)' }} />} type="password" placeholder="Password" />)}
                 </FormItem>
                 <FormItem

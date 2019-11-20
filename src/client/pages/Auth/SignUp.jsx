@@ -78,7 +78,7 @@ const RegisterForm = ({
                     <Form onSubmit={e => handleSubmit(e, signup)}>
                       <FormItem>
                         {getFieldDecorator('name', {
-                          rules: [{ required: true, message: 'Please input your user name!', len: 6 }],
+                          rules: [{ required: true, message: 'Please input your user name!', min: 6 }],
                         })(<Input prefix={<Icon type="user" style={{ color: 'rgba(0,0,0,.25)' }} />} placeholder="Username" />)}
                       </FormItem>
                       <FormItem>
@@ -88,7 +88,7 @@ const RegisterForm = ({
                       </FormItem>
                       <FormItem>
                         {getFieldDecorator('password', {
-                          rules: [{ required: true, message: 'Please input your password!', len: 6 }],
+                          rules: [{ required: true, message: 'Please input your password!', min: 6 }],
                         })(<Input prefix={<Icon type="lock" style={{ color: 'rgba(0,0,0,.25)' }} />} type="password" placeholder="Password" />)}
                       </FormItem>
                       <FormItem
