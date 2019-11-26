@@ -43,7 +43,7 @@ if (process.env.NODE_ENV !== 'development') {
   app.use(compression());
   app.use(express.static('public'));
   app.get('*', (req, res) => {
-    const filePath = './public/index.html';
+    const filePath = '../public/index.html';
     const index = path.resolve(filePath);
     res.sendFile(index);
   });
