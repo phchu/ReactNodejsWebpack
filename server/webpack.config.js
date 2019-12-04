@@ -2,36 +2,39 @@ const path = require('path');
 const nodeExternals = require('webpack-node-externals');
 const TerserPlugin = require('terser-webpack-plugin');
 const WebpackAutoInject = require('webpack-auto-inject-version');
-const {
-  CleanWebpackPlugin
-} = require('clean-webpack-plugin');
+const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 const Dotenv = require('dotenv-webpack');
 
 const DIST = path.join(__dirname, '..', 'dist');
 const dateFormat = 'mmddhhMM';
 module.exports = (env, argv) => {
   const isDEV = argv.mode === 'development';
-  return ({
+  return {
     name: 'server',
     entry: './app.js',
     target: 'node',
     output: {
       path: DIST,
-      filename: 'server.bundle.js',
+      filename: 'server.bundle.js'
     },
     devtool: isDEV ? 'inline-source-map' : false,
-    externals: [nodeExternals({
-      modulesDir: path.resolve(__dirname, '../node_modules'),
-    })],
+    externals: [
+      nodeExternals({
+        modulesDir: path.resolve(__dirname, '../node_modules'),
+        whitelist: ['jquery', 'webpack/hot/dev-server', /^lodash/]
+      })
+    ],
     watch: true,
     module: {
-      rules: [{
-        test: /\.js$/,
-        exclude: /node_modules/,
-        use: {
-          loader: 'babel-loader'
+      rules: [
+        {
+          test: /\.js$/,
+          exclude: /node_modules/,
+          use: {
+            loader: 'babel-loader'
+          }
         }
-      }]
+      ]
     },
     plugins: [
       new Dotenv({
@@ -44,8 +47,8 @@ module.exports = (env, argv) => {
       new TerserPlugin({
         parallel: true,
         terserOptions: {
-          ecma: 6,
-        },
+          ecma: 6
+        }
       }),
       new WebpackAutoInject({
         PACKAGE_JSON_PATH: './package.json',
@@ -66,5 +69,5 @@ module.exports = (env, argv) => {
         }
       })
     ]
-  });
+  };
 };

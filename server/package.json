@@ -5,7 +5,7 @@
   "scripts": {
     "build": "webpack --mode production --progress --colors --devtool false",
     "dev:build": "webpack --mode development --colors",
-    "run": "nodemon",
+    "run": "nodemon \"../dist/server.bundle.js\" --watch \"../dist\"",
     "dev": "run-p dev:build run"
   },
   "author": "phchu",
