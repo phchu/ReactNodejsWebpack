@@ -4,24 +4,21 @@
     "sourceType": "module",
     "allowImportExportEverywhere": true
   },
-  "extends": [
-    "airbnb"
-  ],
+  "extends": ["airbnb", "plugin:prettier/recommended"],
+  "plugins": ["prettier"],
   "env": {
     "browser": true,
     "node": true
   },
   "rules": {
+    "prettier/prettier": "error",
     "no-console": "off",
     "comma-dangle": "off",
     "react/forbid-prop-types": "off",
     "react/jsx-filename-extension": [
       1,
       {
-        "extensions": [
-          ".js",
-          ".jsx"
-        ]
+        "extensions": [".js", ".jsx"]
       }
     ],
     "import/no-named-as-default-member": "off",
