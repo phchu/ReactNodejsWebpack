@@ -7,10 +7,11 @@ import logger from 'morgan';
 import mongoose from 'mongoose';
 import path from 'path';
 
-import createApolloServer from './apollo-server';
 import models from './models';
-import resolvers from './resolvers';
-import schema from './schema';
+import resolvers from './graphql/resolvers';
+import schema from './graphql/schema';
+import createApolloServer from './graphql/apollo-server';
+import api from './api/index';
 
 const app = express();
 const PORT = process.env.NODE_ENV !== 'development' ? 3000 : 8080;
@@ -19,25 +20,30 @@ const server = createApolloServer(schema, resolvers, models);
 server.applyMiddleware({ app, path: '/graphql' });
 
 mongoose
-  .connect(
-    process.env.MONGO_URL,
-    { useCreateIndex: true, useNewUrlParser: true, useUnifiedTopology: true }
-  )
+  .connect(process.env.MONGO_URL, {
+    useCreateIndex: true,
+    useNewUrlParser: true,
+    useUnifiedTopology: true
+  })
   .then(() => console.log('🗄️ DB connected success.'))
   .catch(err => console.error('[ERROR]DB: ', err));
 
-app.use(bodyParser.json({
-  limit: '10mb'
-}));
-app.use(bodyParser.urlencoded({
-  limit: '10mb',
-  extended: true
-}));
+app.use(
+  bodyParser.json({
+    limit: '10mb'
+  })
+);
+app.use(
+  bodyParser.urlencoded({
+    limit: '10mb',
+    extended: true
+  })
+);
 
 app.use(express.static('dist'));
 app.use(logger('dev'));
-
 app.use(cookieParser());
+app.use('/api', api);
 
 if (process.env.NODE_ENV !== 'development') {
   app.use(compression());

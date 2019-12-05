@@ -19,20 +19,23 @@ function wrapResult(result = null, errCode = null) {
   return wrappedResult;
 }
 
-const removeEmpty = (obj) => {
-  Object.keys(obj).forEach(k =>
-    (obj[k] && typeof obj[k] === 'object') && removeEmpty(obj[k]) ||
-    (!obj[k] && obj[k] !== undefined) && delete obj[k]);
-  return obj;
-};
-
-function momentFormat(date, format = 'YYYY/MM/DD HH:mm') {
-  if (!(date instanceof Date)) { date = new Date(date); }
-  return moment(date).utcOffset('+08:00').format(format);
+function momentFormat(_date, format = 'YYYY/MM/DD HH:mm') {
+  let date = _date;
+  if (!(date instanceof Date)) {
+    date = new Date(_date);
+  }
+  return moment(date)
+    .utcOffset('+08:00')
+    .format(format);
 }
 
-export {
-  wrapResult,
-  removeEmpty,
-  momentFormat
+const restResult = (res, result) => {
+  const { err } = result;
+  if (err) {
+    res.status(400).json(result);
+  } else {
+    res.json(result);
+  }
 };
+
+export { wrapResult, momentFormat, restResult };
