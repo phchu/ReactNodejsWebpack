@@ -7,20 +7,17 @@ const TerserPlugin = require('terser-webpack-plugin');
 const HardSourceWebpackPlugin = require('hard-source-webpack-plugin');
 const webpackBundleAnalyzer = require('webpack-bundle-analyzer');
 const nodeObjectHash = require('node-object-hash');
-const {
-  CleanWebpackPlugin
-} = require('clean-webpack-plugin');
+const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 const SpeedMeasurePlugin = require('speed-measure-webpack-plugin');
+const webpack = require('webpack');
 
 const smp = new SpeedMeasurePlugin();
-const {
-  BundleAnalyzerPlugin
-} = webpackBundleAnalyzer;
+const { BundleAnalyzerPlugin } = webpackBundleAnalyzer;
 const DIST = path.join(__dirname, '..', 'dist', 'public');
 const dateFormat = 'mmddhhMM';
 module.exports = (env, argv) => {
   const isDEV = argv.mode === 'development';
-  return (smp.wrap({
+  return smp.wrap({
     name: 'client',
     entry: './index.js',
     output: {
@@ -36,57 +33,63 @@ module.exports = (env, argv) => {
       tls: 'empty'
     },
     module: {
-      rules: [{
-        test: /\.(js|jsx)$/,
-        exclude: /node_modules/,
-        use: {
-          loader: 'babel-loader'
-        }
-      },
-      {
-        test: /\.css$/,
-        use: ExtractTextPlugin.extract({
-          fallback: 'style-loader',
-          use: ['css-loader']
-        })
-      },
-      {
-        test: /\.woff(2)?(\?v=[0-9]\.[0-9]\.[0-9])?$/,
-        use: [{
-          loader: 'url-loader',
-          options: {
-            limit: 10000,
-            mimetype: 'application/font-woff',
-            name: 'assets/fonts/[hash:8]-[name].[ext]'
-          }
-        }]
-      },
-      {
-        test: /\.(ttf|eot)(\?v=[0-9]\.[0-9]\.[0-9])?$/,
-        use: [{
-          loader: 'file-loader',
-          options: {
-            name: 'assets/fonts/[hash:8]-[name].[ext]'
-          }
-        }]
-      },
-      {
-        test: /\.(jpe?g|png|gif|svg)$/,
-        use: [{
-          loader: 'url-loader',
-          options: {
-            limit: 8192,
-            name: 'assets/images/[hash:8]-[name].[ext]'
+      rules: [
+        {
+          test: /\.(js|jsx)$/,
+          exclude: /node_modules/,
+          use: {
+            loader: 'babel-loader'
           }
         },
         {
-          loader: 'image-webpack-loader',
-          options: {
-            byPassOnDebug: true
-          }
+          test: /\.css$/,
+          use: ExtractTextPlugin.extract({
+            fallback: 'style-loader',
+            use: ['css-loader']
+          })
+        },
+        {
+          test: /\.woff(2)?(\?v=[0-9]\.[0-9]\.[0-9])?$/,
+          use: [
+            {
+              loader: 'url-loader',
+              options: {
+                limit: 10000,
+                mimetype: 'application/font-woff',
+                name: 'assets/fonts/[hash:8]-[name].[ext]'
+              }
+            }
+          ]
+        },
+        {
+          test: /\.(ttf|eot)(\?v=[0-9]\.[0-9]\.[0-9])?$/,
+          use: [
+            {
+              loader: 'file-loader',
+              options: {
+                name: 'assets/fonts/[hash:8]-[name].[ext]'
+              }
+            }
+          ]
+        },
+        {
+          test: /\.(jpe?g|png|gif|svg)$/,
+          use: [
+            {
+              loader: 'url-loader',
+              options: {
+                limit: 8192,
+                name: 'assets/images/[hash:8]-[name].[ext]'
+              }
+            },
+            {
+              loader: 'image-webpack-loader',
+              options: {
+                byPassOnDebug: true
+              }
+            }
+          ]
         }
-        ]
-      }
       ]
     },
     resolve: {
@@ -99,10 +102,13 @@ module.exports = (env, argv) => {
       open: true,
       disableHostCheck: true,
       historyApiFallback: true,
-      proxy: {
-        context: ['/graphql', '/api'],
-        target: 'http://localhost:8080'
-      }
+      proxy: [
+        {
+          context: ['/graphql', '/api'],
+          target: 'http://localhost:8080'
+        }
+      ],
+      contentBase: '../dist'
     },
     optimization: {
       runtimeChunk: 'single',
@@ -121,7 +127,7 @@ module.exports = (env, argv) => {
             test: /[\\/]node_modules[\\/](lodash|moment|moment-timezone)[\\/]/
           },
           'antd-vendor': {
-            test: (module) => (/antd/.test(module.context)),
+            test: module => /antd/.test(module.context),
             priority: 2,
             reuseExistingChunk: false
           }
@@ -129,39 +135,41 @@ module.exports = (env, argv) => {
       },
       minimize: true,
       minimizer: [
+        new webpack.WatchIgnorePlugin(['../dist/server.bundle.js']),
         new HardSourceWebpackPlugin({
-          configHash: (webpackConfig) => nodeObjectHash({ sort: false }).hash(webpackConfig),
+          configHash: webpackConfig =>
+            nodeObjectHash({ sort: false }).hash(webpackConfig),
           environmentHash: {
             root: process.cwd(),
             directories: [],
-            files: ['package-lock.json', 'yarn.lock'],
+            files: ['package-lock.json', 'yarn.lock']
           }
         }),
         new TerserPlugin({
           terserOptions: {
             parse: {
-              ecma: 8,
+              ecma: 8
             },
             compress: {
               ecma: 5,
               warnings: false,
               comparisons: false,
-              inline: 2,
+              inline: 2
             },
             mangle: {
-              safari10: true,
+              safari10: true
             },
             output: {
               ecma: 5,
               comments: false,
-              ascii_only: true,
-            },
+              ascii_only: true
+            }
           },
           parallel: true,
           cache: true,
-          sourceMap: false,
+          sourceMap: false
         })
-      ],
+      ]
     },
     plugins: [
       new CleanWebpackPlugin({
@@ -198,5 +206,5 @@ module.exports = (env, argv) => {
       new CompressionPlugin(),
       new BundleAnalyzerPlugin()
     ]
-  }));
+  });
 };

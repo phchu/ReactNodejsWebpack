@@ -1,12 +1,14 @@
-import _ from 'lodash';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 
 import { signInValidation, signUpValidation } from '../validation/auth';
 
 const AUTH_TOKEN_EXPIRY = '180 days';
-const generateToken = async (user, secret = process.env.TOKEN_SECRET,
-  expiresIn = AUTH_TOKEN_EXPIRY) => {
+const generateToken = async (
+  user,
+  secret = process.env.TOKEN_SECRET,
+  expiresIn = AUTH_TOKEN_EXPIRY
+) => {
   const { _id, name } = user;
   return jwt.sign({ _id, name }, secret, { expiresIn });
 };
@@ -32,9 +34,8 @@ const Query = {
       throw new Error("User with given username doesn't exists.");
     }
     return user;
-  },
+  }
 };
-
 
 const Mutation = {
   /**
@@ -59,21 +60,17 @@ const Mutation = {
     }
 
     return {
-      token: generateToken(user, process.env.SECRET, AUTH_TOKEN_EXPIRY),
+      token: generateToken(user, process.env.SECRET, AUTH_TOKEN_EXPIRY)
     };
   },
   /**
-     * Signs up user
-     *
-     * @param {string} email
-     * @param {string} name
-     * @param {string} password
-     */
-  signup: async (
-    root,
-    { input: { email, name, password } },
-    { User }
-  ) => {
+   * Signs up user
+   *
+   * @param {string} email
+   * @param {string} name
+   * @param {string} password
+   */
+  signup: async (root, { input: { email, name, password } }, { User }) => {
     const { error } = signUpValidation({ email, name, password });
     if (error) {
       throw error;
@@ -85,7 +82,8 @@ const Mutation = {
       throw new Error(`User with given ${field} already exists.`);
     }
     const newUser = await new User({ name, email, password }).save();
-    return { _id: _.get(newUser, '_id'), name, email };
+    const { _id, createdAt, updatedAt } = newUser;
+    return { _id, name, email, createdAt, updatedAt };
   }
 };
 

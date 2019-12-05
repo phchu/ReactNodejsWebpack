@@ -2,7 +2,7 @@
   "name": "react_node.js_webpack-client",
   "version": "1.0.0",
   "scripts": {
-    "build": "webpack --mode production --progress --color --devtool false",
+    "build": "webpack --mode production --watch --progress --color --devtool false",
     "dev": "webpack-dev-server --mode development --devtool inline-source-map --hot --colors --progress"
   },
   "author": "phchu",

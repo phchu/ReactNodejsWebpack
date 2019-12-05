@@ -15,10 +15,10 @@ const schema = gql`
     name: String!
     email: String!
     username: String!
-    password: String!    
+    password: String!
     createdAt: String
     updatedAt: String
-  }  
+  }
 
   type Token {
     token: String!
@@ -36,7 +36,7 @@ const schema = gql`
     email: String!
     name: String!
     password: String!
-  }  
+  }
 
   # ---------------------------------------------------------
   # Return Payloads
@@ -47,7 +47,7 @@ const schema = gql`
     name: String
     createdAt: String
     updatedAt: String
-  }  
+  }
 
   # ---------------------------------------------------------
   # Query Root
@@ -69,7 +69,7 @@ const schema = gql`
 
     # Signs up user
     signup(input: SignUpInput!): UserPayload
-  } 
+  }
 `;
 
 export default schema;

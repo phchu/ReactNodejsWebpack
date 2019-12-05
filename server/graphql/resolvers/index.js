@@ -1,5 +1,3 @@
 import userResolver from './user';
 
-export default [
-  userResolver
-];
+export default [userResolver];
