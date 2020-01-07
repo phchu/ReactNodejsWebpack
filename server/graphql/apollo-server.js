@@ -17,7 +17,6 @@ const createApolloServer = (schema, resolvers, models) =>
       const result = { ...models };
       if (req) {
         const authUser = await checkAuthorization(req);
-        console.log('authUser: ', authUser);
         if (authUser) {
           req.authUser = authUser;
           _.assign(result, { authUser });

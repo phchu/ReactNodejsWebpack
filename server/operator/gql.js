@@ -37,7 +37,7 @@ async function gql(schema, operation, q, authUser) {
   );
   const { errors, data } = gqlResult;
   let result;
-  if (data) {
+  if (_.isEmpty(errors)) {
     result = wrapResult(_.get(data, operation));
   } else {
     result = wrapResult(

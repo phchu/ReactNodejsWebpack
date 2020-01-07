@@ -11,7 +11,6 @@ const BEARER = 'Bearer ';
 const checkAuthorization = (req, res, next) => {
   const token = _.get(req.headers, 'authorization');
   let result;
-  console.log('checkAuthorization: ', token);
   if (!token)
     return res
       .status(401)
@@ -23,7 +22,6 @@ const checkAuthorization = (req, res, next) => {
         _.replace(token, BEARER, ''),
         process.env.TOKEN_SECRET
       );
-      console.log('authUser: ', authUser);
       result = authUser;
       if (next && authUser) {
         req.authUser = authUser;

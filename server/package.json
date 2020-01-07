@@ -32,7 +32,9 @@
     "moment": "^2.24.0",
     "mongodb": "^3.3.2",
     "mongoose": "^5.7.5",
-    "morgan": "^1.9.0"
+    "morgan": "^1.9.0",
+    "swagger-jsdoc": "^3.5.0",
+    "swagger-ui-express": "^4.1.2"
   },
   "devDependencies": {
     "dotenv-webpack": "^1.7.0",

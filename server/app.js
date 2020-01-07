@@ -12,6 +12,7 @@ import resolvers from './graphql/resolvers';
 import schema from './graphql/schema';
 import createApolloServer from './graphql/apollo-server';
 import api from './api/index';
+import swaggerDoc from './swaggerDoc';
 
 const app = express();
 const PORT = process.env.NODE_ENV !== 'development' ? 3000 : 8080;
@@ -27,6 +28,8 @@ mongoose
   })
   .then(() => console.log('🗄️ DB connected success.'))
   .catch(err => console.error('[ERROR]DB: ', err));
+
+swaggerDoc(app);
 
 app.use(
   bodyParser.json({

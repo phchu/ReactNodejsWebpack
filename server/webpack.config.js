@@ -46,8 +46,15 @@ module.exports = (env, argv) => {
       }),
       new TerserPlugin({
         parallel: true,
+        extractComments: {
+          condition: /@swagger/i,
+          filename: 'server.api.js'
+        },
         terserOptions: {
-          ecma: 6
+          ecma: 6,
+          output: {
+            comments: /@swagger/i
+          }
         }
       }),
       new WebpackAutoInject({
