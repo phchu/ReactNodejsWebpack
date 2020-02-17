@@ -5,18 +5,21 @@ import React from 'react';
 
 import PageLoading from './PageLoading';
 
-const LazyRoute = (props) => {
-  const component = Loadable({
-    loader: props.component,
-    loading: ({ isLoading, error }) => {
-      if (isLoading) {
-        return <PageLoading />;
-      } else if (error) {
-        console.error(error);
-        return <div>Sorry, there was a problem loading the page.</div>;
-      }
-      return null;
+const LazyRoute = props => {
+  const loading = ({ isLoading, error }) => {
+    if (isLoading) {
+      return <PageLoading />;
     }
+    if (error) {
+      console.error(error);
+      return <div>Sorry, there was a problem loading the page.</div>;
+    }
+    return null;
+  };
+  const { component: loader } = props;
+  const component = Loadable({
+    loader,
+    loading
   });
 
   return <Route {...props} component={component} />;

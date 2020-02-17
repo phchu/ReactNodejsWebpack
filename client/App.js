@@ -6,7 +6,7 @@ import Default from './components/Default';
 import MainLayout from './layouts/MainLayout';
 import NotFound from './pages/NotFound';
 
-export default () => (
+const App = () => (
   <MainLayout>
     <Switch>
       <Route exact path="/" component={Default} />
@@ -15,3 +15,5 @@ export default () => (
     </Switch>
   </MainLayout>
 );
+
+export default App;

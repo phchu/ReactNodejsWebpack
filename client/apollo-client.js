@@ -8,46 +8,49 @@ import { onError } from 'apollo-link-error';
  * Creates a Apollo Link, that adds authentication token to request
  */
 const createAuthLink = () => {
-  const request = (operation) => {
+  const request = operation => {
     const token = localStorage.getItem('token');
     operation.setContext({
       headers: {
-        authorization: token,
-      },
+        authorization: token
+      }
     });
   };
 
-  return new ApolloLink((operation, forward) =>
-    new Observable((observer) => {
-      let handle;
-      Promise.resolve(operation)
-        .then(oper => request(oper))
-        .then(() => {
-          handle = forward(operation).subscribe({
-            next: observer.next.bind(observer),
-            error: observer.error.bind(observer),
-            complete: observer.complete.bind(observer),
-          });
-        })
-        .catch(observer.error.bind(observer));
+  return new ApolloLink(
+    (operation, forward) =>
+      new Observable(observer => {
+        let handle;
+        Promise.resolve(operation)
+          .then(oper => request(oper))
+          .then(() => {
+            handle = forward(operation).subscribe({
+              next: observer.next.bind(observer),
+              error: observer.error.bind(observer),
+              complete: observer.complete.bind(observer)
+            });
+          })
+          .catch(observer.error.bind(observer));
 
-      return () => {
-        if (handle) handle.unsubscribe();
-      };
-    }));
+        return () => {
+          if (handle) handle.unsubscribe();
+        };
+      })
+  );
 };
 
 /**
  * Helper functions that handles error cases
  */
-const handleErrors = () => onError(({ graphQLErrors, networkError }) => {
-  if (graphQLErrors) {
-    console.error('graphQLErrors', graphQLErrors);
-  }
-  if (networkError) {
-    console.error('networkError', networkError);
-  }
-});
+const handleErrors = () =>
+  onError(({ graphQLErrors, networkError }) => {
+    if (graphQLErrors) {
+      console.error('graphQLErrors', graphQLErrors);
+    }
+    if (networkError) {
+      console.error('networkError', networkError);
+    }
+  });
 
 /**
  * Creates a Apollo Client
@@ -59,7 +62,7 @@ const createApolloClient = () => {
 
   return new ApolloClient({
     link: ApolloLink.from([handleErrors(), authLink, httpLink]),
-    cache,
+    cache
   });
 };
 

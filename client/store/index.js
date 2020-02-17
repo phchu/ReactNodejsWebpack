@@ -11,14 +11,14 @@ const StoreContext = createContext();
  * Combine initial states
  */
 const initialStore = {
-  auth: authInitialState,
+  auth: authInitialState
 };
 
 /**
  * Combine reducers
  */
 const reducers = (store, action) => ({
-  auth: authReducer(store.auth, action),
+  auth: authReducer(store.auth, action)
 });
 
 /**

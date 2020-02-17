@@ -2,11 +2,15 @@
   "parser": "babel-eslint",
   "parserOptions": {
     "sourceType": "module",
-    "allowImportExportEverywhere": true
+    "allowImportExportEverywhere": true,
+    "ecmaFeatures": {
+      "jsx": true
+    }
   },
-  "extends": ["airbnb", "plugin:prettier/recommended"],
-  "plugins": ["prettier"],
+  "extends": ["airbnb", "plugin:prettier/recommended", "plugin:react/recommended", "prettier/react"],
+  "plugins": ["prettier", "react"],
   "env": {
+    "es6": true,
     "browser": true,
     "node": true
   },
@@ -14,6 +18,7 @@
     "prettier/prettier": "error",
     "no-console": "off",
     "comma-dangle": "off",
+    "react/jsx-props-no-spreading": "off",
     "react/forbid-prop-types": "off",
     "react/jsx-filename-extension": [
       1,
@@ -21,6 +26,8 @@
         "extensions": [".js", ".jsx"]
       }
     ],
+    "react/jsx-one-expression-per-line": "off",
+    "react/jsx-wrap-multilines": "off",
     "import/no-named-as-default-member": "off",
     "import/no-named-as-default": "off",
     "import/no-extraneous-dependencies": "off",

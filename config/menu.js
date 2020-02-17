@@ -8,6 +8,7 @@ class MenuItem {
     this.icon = icon;
     this.subMenu = [];
   }
+
   getInfo() {
     const info = {
       URL: this.url,
@@ -18,13 +19,12 @@ class MenuItem {
     };
     return info;
   }
+
   addSubItem(item) {
     _.assign(item, {
       URL: `${this.url}${item.URL}`
     });
-    this
-      .subMenu
-      .push(item);
+    this.subMenu.push(item);
   }
 }
 
@@ -33,8 +33,4 @@ const PERMISSION = new MenuItem('permission', 'Permission', 'right').getInfo();
 config.addSubItem(PERMISSION);
 const CONFIG = config.getInfo();
 const MAP = [CONFIG];
-export {
-  CONFIG,
-  PERMISSION,
-  MAP
-};
+export { CONFIG, PERMISSION, MAP };

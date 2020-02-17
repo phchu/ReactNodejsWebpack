@@ -22,7 +22,7 @@ const userSchema = new Schema(
       required: true,
       lowercase: true,
       trim: true,
-      unique: true,
+      unique: true
     },
     passwordResetToken: String,
     passwordResetTokenExpiry: Date,
@@ -34,7 +34,7 @@ const userSchema = new Schema(
     }
   },
   {
-    timestamps: true,
+    timestamps: true
   }
 );
 
@@ -42,7 +42,7 @@ const userSchema = new Schema(
  * Hashes the users password when saving it to DB
  */
 // eslint-disable-next-line func-names
-userSchema.pre('save', async function (next) {
+userSchema.pre('save', async function(next) {
   try {
     if (!this.isModified('password')) {
       return next();

@@ -11,7 +11,7 @@ export const SIGN_OUT = 'SIGN_OUT';
  * Initial State
  */
 export const authInitialState = {
-  user: null,
+  user: null
 };
 
 /**
@@ -27,12 +27,12 @@ export const authReducer = (state = authInitialState, action) => {
     case SET_AUTH_USER:
       return {
         ...state,
-        user: payload,
+        user: payload
       };
     case CLEAR_AUTH_USER: {
       return {
         ...state,
-        ...authInitialState,
+        ...authInitialState
       };
     }
 
