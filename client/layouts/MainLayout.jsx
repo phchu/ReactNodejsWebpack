@@ -8,9 +8,7 @@ import * as MENU from '../../config/menu';
 import { SIGN_OUT } from '../store/auth';
 import { useStore } from '../store';
 
-const {
-  Header, Content, Footer, Sider
-} = Layout;
+const { Header, Content, Footer, Sider } = Layout;
 const { SubMenu } = Menu;
 const { MAP } = MENU;
 const ORG_NAME = 'Organization';
@@ -19,38 +17,49 @@ const ORG_ABBR = _.chain(ORG_NAME)
   .toUpper()
   .value();
 let defaultPath = _.head(MAP);
-defaultPath = defaultPath.SUB_MENU.length > 0 ?
-  _.chain(defaultPath.SUB_MENU).head().get('URL').value() : defaultPath.URL;
+defaultPath =
+  defaultPath.SUB_MENU.length > 0
+    ? _.chain(defaultPath.SUB_MENU)
+        .head()
+        .get('URL')
+        .value()
+    : defaultPath.URL;
 const { confirm } = Modal;
 
 const MainLayout = ({ location, history, children }) => {
   const { pathname } = location;
   const initialState = {
     collapsed: false,
-    path: pathname === '/' ? _.words(defaultPath, /[^/]+/g) : _.words(pathname, /[^/]+/g)
+    path:
+      pathname === '/'
+        ? _.words(defaultPath, /[^/]+/g)
+        : _.words(pathname, /[^/]+/g)
   };
   const [{ auth }, dispatch] = useStore();
   const [state, setState] = useState(initialState);
   const { collapsed, path } = state;
-  useEffect(
-    () => {
-      setState(initialState);
-    },
-    [location.pathname]
-  );
+  useEffect(() => {
+    setState(initialState);
+  }, [location.pathname]);
   const name = _.get(auth, 'user.name');
-  const altName = _.chain(name).head().toUpper().value();
-  const handleClick = (e) => {
+  const altName = _.chain(name)
+    .head()
+    .toUpper()
+    .value();
+  const handleClick = e => {
     const { key } = e;
+    let URL = '/';
     for (let i = 0; i < MAP.length; i += 1) {
       const item = MAP[i];
       const { SUB_MENU } = item;
-      for (let j = 0; j < SUB_MENU.length; j += 1) {
-        const subItem = SUB_MENU[j];
-        const { NAME, URL } = subItem;
-        if (NAME === key) {
-          history.push(URL);
-        } else history.push('/');
+      const TARGET_URL = _.chain(SUB_MENU)
+        .keyBy('NAME')
+        .mapValues('URL')
+        .value();
+      if (!_.isNil(TARGET_URL[key])) {
+        URL = TARGET_URL[key];
+        history.push(URL);
+        break;
       }
     }
   };
@@ -65,7 +74,7 @@ const MainLayout = ({ location, history, children }) => {
       }
     });
   };
-  const handleMenuClick = (e) => {
+  const handleMenuClick = e => {
     const { key } = e;
     switch (key) {
       case 'logout':
@@ -78,10 +87,13 @@ const MainLayout = ({ location, history, children }) => {
   const menu = (
     <Menu onClick={handleMenuClick}>
       <Menu.Item key="logout">
-        <Icon type="logout" style={{ marginRight: '5px' }} />Logout
+        <Icon type="logout" style={{ marginRight: '5px' }} />
+        Logout
       </Menu.Item>
     </Menu>
   );
+
+  const YEAR = new Date().getFullYear();
   return (
     <Layout style={{ minHeight: '100vh' }}>
       <Sider trigger={null} collapsible collapsed={collapsed}>
@@ -98,14 +110,14 @@ const MainLayout = ({ location, history, children }) => {
           <span style={{ color: '#fff', fontSize: '20px' }}>
             {collapsed ? (
               <div>
-                <b>{ORG_ABBR}</b>
-                A
-              </div>) : (
-                <div>
-                  <b>{ORG_NAME}</b>
-                  Admin
-                </div>
-              )}
+                <b>{ORG_ABBR}</b>A
+              </div>
+            ) : (
+              <div>
+                <b>{ORG_NAME}</b>
+                Admin
+              </div>
+            )}
           </span>
         </div>
         <Menu
@@ -116,9 +128,7 @@ const MainLayout = ({ location, history, children }) => {
           mode="inline"
         >
           {_.map(MAP, (group, gid) => {
-            const {
-              NAME, ICON, ALIAS, SUB_MENU
-            } = group;
+            const { NAME, ICON, ALIAS, SUB_MENU } = group;
             let result = <div />;
             if (_.get(SUB_MENU, 'length') > 0) {
               result = (
@@ -131,7 +141,7 @@ const MainLayout = ({ location, history, children }) => {
                     </span>
                   }
                 >
-                  {_.map(SUB_MENU, (item) => {
+                  {_.map(SUB_MENU, item => {
                     const { NAME: SUB_NAME, ALIAS: SUB_ALIAS } = item;
                     return (
                       <Menu.Item key={`${SUB_NAME}`}>{SUB_ALIAS}</Menu.Item>
@@ -162,7 +172,13 @@ const MainLayout = ({ location, history, children }) => {
           <div style={{ float: 'right' }}>
             <Dropdown overlay={menu}>
               <div>
-                <Avatar alt={name} style={{ verticalAlign: 'middle', marginRight: '10px' }}>{altName}</Avatar><font color="white">{name}</font>
+                <Avatar
+                  alt={name}
+                  style={{ verticalAlign: 'middle', marginRight: '10px' }}
+                >
+                  {altName}
+                </Avatar>
+                <font color="white">{name}</font>
               </div>
             </Dropdown>
           </div>
@@ -171,7 +187,8 @@ const MainLayout = ({ location, history, children }) => {
           <Breadcrumb style={{ margin: '16px 0' }}>
             {_.map(path, (item, index) => (
               <Breadcrumb.Item key={index}>
-                {_.get(MENU[_.toUpper(item)], 'ALIAS') && MENU[_.toUpper(item)].ALIAS}
+                {_.get(MENU[_.toUpper(item)], 'ALIAS') &&
+                  MENU[_.toUpper(item)].ALIAS}
               </Breadcrumb.Item>
             ))}
           </Breadcrumb>
@@ -180,7 +197,9 @@ const MainLayout = ({ location, history, children }) => {
           </div>
         </Content>
         <Footer style={{ textAlign: 'center' }}>
-          <strong>Copyright &copy; 2019 - 2020 The {ORG_NAME} Group.</strong>{' '}
+          <strong>
+            Copyright &copy; {YEAR} - {YEAR + 1} The {ORG_NAME} Group.
+          </strong>{' '}
           All rights reserved.
         </Footer>
       </Layout>
@@ -191,7 +210,7 @@ const MainLayout = ({ location, history, children }) => {
 MainLayout.propTypes = {
   children: PropTypes.object.isRequired,
   location: PropTypes.object.isRequired,
-  history: PropTypes.object.isRequired,
+  history: PropTypes.object.isRequired
 };
 
 export default withRouter(MainLayout);
