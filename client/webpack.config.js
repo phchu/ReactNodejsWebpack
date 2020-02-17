@@ -136,15 +136,15 @@ module.exports = (env, argv) => {
       minimize: true,
       minimizer: [
         new webpack.WatchIgnorePlugin(['../dist/server.bundle.js']),
-        new HardSourceWebpackPlugin({
-          configHash: webpackConfig =>
-            nodeObjectHash({ sort: false }).hash(webpackConfig),
-          environmentHash: {
-            root: process.cwd(),
-            directories: [],
-            files: ['package-lock.json', 'yarn.lock']
-          }
-        }),
+        // new HardSourceWebpackPlugin({
+        //   configHash: webpackConfig =>
+        //     nodeObjectHash({ sort: false }).hash(webpackConfig),
+        //   environmentHash: {
+        //     root: process.cwd(),
+        //     directories: [],
+        //     files: ['package-lock.json', 'yarn.lock']
+        //   }
+        // }),
         new TerserPlugin({
           terserOptions: {
             parse: {
