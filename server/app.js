@@ -17,29 +17,35 @@ import swaggerDoc from './swaggerDoc';
 const app = express();
 const PORT = process.env.NODE_ENV !== 'development' ? 3000 : 8080;
 // Create a Apollo Server
-const server = createApolloServer(schema, resolvers, models);
-server.applyMiddleware({ app, path: '/graphql' });
-
+async function startApolloServer() {
+  const server = createApolloServer(schema, resolvers, models);
+  await server.start(); // Await the server start
+  server.applyMiddleware({ app, path: '/graphql' });
+  console.log(
+    `Apollo Server ready at http://localhost:3000${server.graphqlPath}`
+  );
+}
+await startApolloServer();
 mongoose
   .connect(process.env.MONGO_URL, {
     useCreateIndex: true,
     useNewUrlParser: true,
-    useUnifiedTopology: true
+    useUnifiedTopology: true,
   })
   .then(() => console.log('🗄️ DB connected success.'))
-  .catch(err => console.error('[ERROR]DB: ', err));
+  .catch((err) => console.error('[ERROR]DB: ', err));
 
 swaggerDoc(app);
 
 app.use(
   bodyParser.json({
-    limit: '10mb'
+    limit: '10mb',
   })
 );
 app.use(
   bodyParser.urlencoded({
     limit: '10mb',
-    extended: true
+    extended: true,
   })
 );
 

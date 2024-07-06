@@ -1,0 +1,9 @@
+.vscode
+*node_modules
+dist
+*.log
+/dist
+/node_modules
+npm-debug.log
+*.pem
+*.pub
