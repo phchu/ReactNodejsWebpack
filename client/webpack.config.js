@@ -1,36 +1,42 @@
 const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
-const ExtractTextPlugin = require('extract-text-webpack-plugin');
-const WebpackAutoInject = require('webpack-auto-inject-version');
+const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const CompressionPlugin = require('compression-webpack-plugin');
 const TerserPlugin = require('terser-webpack-plugin');
-const HardSourceWebpackPlugin = require('hard-source-webpack-plugin');
 const webpackBundleAnalyzer = require('webpack-bundle-analyzer');
-const nodeObjectHash = require('node-object-hash');
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 const SpeedMeasurePlugin = require('speed-measure-webpack-plugin');
-const webpack = require('webpack');
 
-const smp = new SpeedMeasurePlugin();
 const { BundleAnalyzerPlugin } = webpackBundleAnalyzer;
 const DIST = path.join(__dirname, '..', 'dist', 'public');
-const dateFormat = 'mmddhhMM';
+
+const bundleFilename = (pathData) => {
+  let { name } = pathData.chunk;
+  // name will be undefined for vendors
+  if (name === undefined) {
+    name = pathData.chunk.id;
+    // id is very long by default, I chose to shorten it
+    if (name.includes('vendors-')) {
+      name = 'vendors';
+    }
+  }
+  return `assets/js/${name}.bundle.js`;
+};
 module.exports = (env, argv) => {
   const isDEV = argv.mode === 'development';
-  return smp.wrap({
+  const config = {
     name: 'client',
     entry: './index.js',
     output: {
       path: DIST,
-      filename: 'assets/js/[name].bundle.js',
-      chunkFilename: 'assets/js/[name].chunk.js',
-      publicPath: '/'
+      filename: bundleFilename,
+      chunkFilename: 'assets/js/[name].bundle.js',
+      publicPath: '/',
     },
     node: {
-      console: false,
-      fs: 'empty',
-      net: 'empty',
-      tls: 'empty'
+      __dirname: true,
+      __filename: true,
+      global: true,
     },
     module: {
       rules: [
@@ -38,15 +44,12 @@ module.exports = (env, argv) => {
           test: /\.(js|jsx)$/,
           exclude: /node_modules/,
           use: {
-            loader: 'babel-loader'
-          }
+            loader: 'babel-loader',
+          },
         },
         {
           test: /\.css$/,
-          use: ExtractTextPlugin.extract({
-            fallback: 'style-loader',
-            use: ['css-loader']
-          })
+          use: [MiniCssExtractPlugin.loader, 'css-loader'],
         },
         {
           test: /\.woff(2)?(\?v=[0-9]\.[0-9]\.[0-9])?$/,
@@ -56,10 +59,10 @@ module.exports = (env, argv) => {
               options: {
                 limit: 10000,
                 mimetype: 'application/font-woff',
-                name: 'assets/fonts/[hash:8]-[name].[ext]'
-              }
-            }
-          ]
+                name: 'assets/fonts/[hash:8]-[name].[ext]',
+              },
+            },
+          ],
         },
         {
           test: /\.(ttf|eot)(\?v=[0-9]\.[0-9]\.[0-9])?$/,
@@ -67,10 +70,10 @@ module.exports = (env, argv) => {
             {
               loader: 'file-loader',
               options: {
-                name: 'assets/fonts/[hash:8]-[name].[ext]'
-              }
-            }
-          ]
+                name: 'assets/fonts/[hash:8]-[name].[ext]',
+              },
+            },
+          ],
         },
         {
           test: /\.(jpe?g|png|gif|svg)$/,
@@ -79,36 +82,49 @@ module.exports = (env, argv) => {
               loader: 'url-loader',
               options: {
                 limit: 8192,
-                name: 'assets/images/[hash:8]-[name].[ext]'
-              }
+                name: 'assets/images/[hash:8]-[name].[ext]',
+              },
             },
             {
               loader: 'image-webpack-loader',
               options: {
-                byPassOnDebug: true
-              }
-            }
-          ]
-        }
-      ]
+                byPassOnDebug: true,
+              },
+            },
+          ],
+        },
+      ],
     },
     resolve: {
       modules: [path.resolve(__dirname, '..', 'node_modules'), 'node_modules'],
-      extensions: ['.js', '.json', '.jsx']
+      extensions: [
+        '.mjs',
+        '.es',
+        '.es6',
+        '.js',
+        '.jsx',
+        '.ts',
+        '.tsx',
+        '.json',
+      ],
+      fallback: {
+        path: false,
+        readline: false,
+        fs: false,
+      },
     },
     devtool: isDEV ? 'inline-source-map' : false,
     devServer: {
       port: 3000,
+      compress: true,
       open: true,
-      disableHostCheck: true,
-      historyApiFallback: true,
+      hot: true,
       proxy: [
         {
           context: ['/graphql', '/api'],
-          target: 'http://localhost:8080'
-        }
+          target: 'http://localhost:8080',
+        },
       ],
-      contentBase: '../dist'
     },
     optimization: {
       runtimeChunk: 'single',
@@ -118,93 +134,74 @@ module.exports = (env, argv) => {
         minSize: 0,
         cacheGroups: {
           'graphql-vendor': {
-            test: /[\\/]node_modules[\\/](apollo-cache-inmemory|apollo-client|apollo-link|apollo-link-error|apollo-link-http|graphql|graphql-tag)[\\/]/
+            test: /[\\/]node_modules[\\/](apollo-cache-inmemory|apollo-client|apollo-link|apollo-link-error|apollo-link-http|graphql|graphql-tag)[\\/]/,
+            name: 'graphql-vendor~main',
+            chunks: 'all',
+            enforce: true,
+            priority: 20,
+          },
+          vendor: {
+            test: /[\\/]node_modules[\\/]/,
+            name: 'vendor',
+            chunks: 'all',
+            priority: 10,
           },
           'react-vendor': {
-            test: /[\\/]node_modules[\\/](react|react-dom|history|prop-types|react-apollo|react-apollo-hooks|react-fa|react-loadable|react-router-dom)[\\/]/
+            test: /[\\/]node_modules[\\/](react|react-dom|history|prop-types|react-apollo|react-apollo-hooks|react-fa|react-loadable|react-router-dom)[\\/]/,
+            name: 'react-vendor~main',
+            chunks: 'all',
+            enforce: true,
+            priority: 20,
           },
           utility: {
-            test: /[\\/]node_modules[\\/](lodash|moment|moment-timezone)[\\/]/
+            test: /[\\/]node_modules[\\/](lodash|moment|moment-timezone)[\\/]/,
+            name: 'utility-vendor~main',
+            chunks: 'all',
+            enforce: true,
+            priority: 20,
           },
           'antd-vendor': {
-            test: module => /antd/.test(module.context),
-            priority: 2,
-            reuseExistingChunk: false
-          }
-        }
+            test: (module) => /antd/.test(module.context),
+            reuseExistingChunk: false,
+            name: 'antd-vendor~main',
+            chunks: 'all',
+            enforce: true,
+            priority: 20,
+          },
+        },
       },
       minimize: true,
       minimizer: [
-        new webpack.WatchIgnorePlugin(['../dist/server.bundle.js']),
-        // new HardSourceWebpackPlugin({
-        //   configHash: webpackConfig =>
-        //     nodeObjectHash({ sort: false }).hash(webpackConfig),
-        //   environmentHash: {
-        //     root: process.cwd(),
-        //     directories: [],
-        //     files: ['package-lock.json', 'yarn.lock']
-        //   }
-        // }),
         new TerserPlugin({
           terserOptions: {
-            parse: {
-              ecma: 8
-            },
-            compress: {
-              ecma: 5,
-              warnings: false,
-              comparisons: false,
-              inline: 2
-            },
-            mangle: {
-              safari10: true
-            },
-            output: {
-              ecma: 5,
+            sourceMap: false,
+            format: {
               comments: false,
-              ascii_only: true
-            }
+            },
           },
+          extractComments: false,
           parallel: true,
-          cache: true,
-          sourceMap: false
-        })
-      ]
+        }),
+      ],
     },
     plugins: [
       new CleanWebpackPlugin({
         dangerouslyAllowCleanPatternsOutsideProject: true,
-        cleanAfterEveryBuildPatterns: [DIST]
+        cleanAfterEveryBuildPatterns: [DIST],
       }),
       new HtmlWebpackPlugin({
         template: '../public/index.html',
         favicon: '../public/favicon.ico',
-        inject: true
-      }),
-      new ExtractTextPlugin({
-        filename: 'assets/css/[hash:8]-[name].css',
-        allChunks: true
-      }),
-      new WebpackAutoInject({
-        PACKAGE_JSON_PATH: './package.json',
-        SHORT: 'VER',
-        components: {
-          AutoIncreaseVersion: true,
-          InjectAsComment: true,
-          InjectByTag: false
-        },
-        componentsOptions: {
-          AutoIncreaseVersion: {
-            runInWatchMode: false // it will increase version with every single build!
-          },
-          InjectAsComment: {
-            tag: 'v{version} (build{date})',
-            dateFormat
-          }
-        }
       }),
       new CompressionPlugin(),
-      new BundleAnalyzerPlugin()
-    ]
-  });
+      new BundleAnalyzerPlugin(),
+    ],
+  };
+  const configWithTimeMeasures = new SpeedMeasurePlugin().wrap(config);
+  configWithTimeMeasures.plugins.push(
+    new MiniCssExtractPlugin({
+      chunkFilename: 'assets/css/[hash:8]-[name].css',
+    })
+  );
+  return configWithTimeMeasures;
 };
