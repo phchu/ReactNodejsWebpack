@@ -43,7 +43,7 @@
     "npm-run-all2": "^6.2.0",
     "speed-measure-webpack-plugin": "^1.5.0",
     "terser-webpack-plugin": "^5.3.9",
-    "webpack": "^5.89.0",
+    "webpack": "^5.94.0",
     "webpack-auto-inject-version": "^1.2.2",
     "webpack-bundle-analyzer": "^4.10.1",
     "webpack-cli": "^5.1.4",
