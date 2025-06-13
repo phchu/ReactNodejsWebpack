@@ -6,6 +6,7 @@ const TerserPlugin = require('terser-webpack-plugin');
 const webpackBundleAnalyzer = require('webpack-bundle-analyzer');
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 const SpeedMeasurePlugin = require('speed-measure-webpack-plugin');
+const ImageMinimizerPlugin = require('image-minimizer-webpack-plugin');
 
 const { BundleAnalyzerPlugin } = webpackBundleAnalyzer;
 const DIST = path.join(__dirname, '..', 'dist', 'public');
@@ -76,22 +77,16 @@ module.exports = (env, argv) => {
           ],
         },
         {
-          test: /\.(jpe?g|png|gif|svg)$/,
-          use: [
-            {
-              loader: 'url-loader',
-              options: {
-                limit: 8192,
-                name: 'assets/images/[hash:8]-[name].[ext]',
-              },
+          test: /\.(jpe?g|png|gif|svg)$/i,
+          type: 'asset',
+          parser: {
+            dataUrlCondition: {
+              maxSize: 8 * 1024, // Convert images smaller than 8KB to base64
             },
-            {
-              loader: 'image-webpack-loader',
-              options: {
-                byPassOnDebug: true,
-              },
-            },
-          ],
+          },
+          generator: {
+            filename: 'assets/images/[hash:8]-[name][ext]',
+          },
         },
       ],
     },
@@ -119,10 +114,16 @@ module.exports = (env, argv) => {
       compress: true,
       open: true,
       hot: true,
+      historyApiFallback: true,
+      client: {
+        webSocketURL: 'ws://localhost:3000/ws',
+      },
       proxy: [
         {
           context: ['/graphql', '/api'],
-          target: 'http://localhost:8080',
+          target: 'http://backend:8080',
+          changeOrigin: true,
+          secure: false,
         },
       ],
     },
@@ -181,6 +182,26 @@ module.exports = (env, argv) => {
           },
           extractComments: false,
           parallel: true,
+        }),
+        new ImageMinimizerPlugin({
+          exclude: /font-awesome\/fonts/,
+          minimizer: {
+            implementation: ImageMinimizerPlugin.imageminMinify,
+            options: {
+              plugins: [
+                ['gifsicle', { interlaced: true }],
+                ['mozjpeg', { quality: 80 }],
+                ['pngquant', { quality: [0.7, 0.9] }],
+                [
+                  'svgo',
+                  {
+                    plugins: [{ name: 'removeViewBox', active: false }],
+                  },
+                ],
+              ],
+            },
+          },
+          loader: false,
         }),
       ],
     },

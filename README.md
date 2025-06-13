@@ -20,15 +20,18 @@ This is a template project for full stack development with React and Node.js. Ja
 
 #### Compile
 
-- Webpack 4
+- Webpack 5
 - Babel 7
 
 ---
 
 ### Quick Start
+
 #### Create enviornment variables config for webpack
- - **_.dev.env_**: config for _development_ environment
- - **_.prod.env_**: config for _production_ environment
+
+- **_.dev.env_**: config for _development_ environment
+- **_.prod.env_**: config for _production_ environment
+
 ```
 # development or production
 NODE_ENV=
@@ -39,6 +42,28 @@ MONGO_URL=
 # Secret
 TOKEN_SECRET=
 ```
+
+#### Development in docker and docker-compose
+
+To build or rebuild images
+
+```
+docker-compose build --no-cache
+```
+
+Aggregate containers
+
+```
+docker compose up
+```
+
+Aggregate containers and do not attach MongoDB service
+
+```
+docker compose up --no-attach mongo
+```
+
+---
 
 #### Install NPM packages
 

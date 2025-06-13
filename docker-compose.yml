@@ -1,0 +1,58 @@
+services:
+  mongo:
+    image: mongo:6.0.23
+    container_name: mongoDB
+    ports:
+      - '27017:27017'
+    volumes:
+      - ${PWD}/../mongo-data:/data/db
+    networks:
+      - app-network
+
+  backend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: backend
+    volumes:
+      - .:/app
+      - /app/node_modules
+    ports:
+      - '8080:8080'
+    entrypoint: ['/bin/sh', '-c']
+    command:
+      - |
+        yarn install
+        yarn --cwd server dev
+    environment:
+      NODE_ENV: development
+      CHOKIDAR_USEPOLLING: 'true'
+    depends_on:
+      - mongo
+    networks:
+      - app-network
+
+  frontend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: frontend
+    volumes:
+      - .:/app
+      - /app/node_modules
+    ports:
+      - '3000:3000'
+    entrypoint: ['/bin/sh', '-c']
+    command:
+      - |
+        yarn install
+        yarn --cwd client dev
+    environment:
+      NODE_ENV: development
+      CHOKIDAR_USEPOLLING: 'true' # Watch file changes by polling
+    networks:
+      - app-network
+
+networks:
+  app-network:
+    driver: bridge
