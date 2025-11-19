@@ -49,5 +49,13 @@
     "webpack-cli": "^5.1.4",
     "webpack-dev-server": "^4.15.1",
     "webpack-node-externals": "^3.0.0"
+  },
+  "dependencies": {
+    "braces": "3.0.3",
+    "fast-xml-parser": "4.4.1",
+    "follow-redirects": "1.15.6",
+    "micromatch": "4.0.8",
+    "webpack-dev-middleware": "5.3.4",
+    "ws": "7.5.10"
   }
 }
