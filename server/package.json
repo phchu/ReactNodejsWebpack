@@ -12,8 +12,8 @@
   "license": "ISC",
   "private": true,
   "dependencies": {
-    "@apollo/server": "^4.10.4",
     "@hapi/joi": "^16.1.7",
+    "apollo-server-express": "^3.13.0",
     "bcryptjs": "^2.4.3",
     "body-parser": "~1.20.3",
     "bottleneck": "^2.3.0",

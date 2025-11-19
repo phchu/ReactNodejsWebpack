@@ -27,11 +27,7 @@ async function startApolloServer() {
 }
 await startApolloServer();
 mongoose
-  .connect(process.env.MONGO_URL, {
-    useCreateIndex: true,
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-  })
+  .connect(process.env.MONGO_URL)
   .then(() => console.log('🗄️ DB connected success.'))
   .catch((err) => console.error('[ERROR]DB: ', err));
 
