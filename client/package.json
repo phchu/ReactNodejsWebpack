@@ -25,7 +25,7 @@
     "imagemin-optipng": "^8.0.0",
     "imagemin-pngquant": "^10.0.0",
     "imagemin-svgo": "^11.0.1",
-    "lodash": "^4.17.5",
+    "lodash": "^4.17.23",
     "moment": "^2.24.0",
     "prop-types": "^15.7.2",
     "react": "^16.10.2",
