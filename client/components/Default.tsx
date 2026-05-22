@@ -1,4 +1,5 @@
-import { Icon } from 'react-fa';
+import { Spin } from 'antd';
+import { LoadingOutlined } from '@ant-design/icons';
 import React from 'react';
 
 import logo from '../assets/images/index.jpg';
@@ -7,7 +8,7 @@ const Default = () => (
   <div>
     <h1>
       <span>
-        <Icon spin name="spinner" />{' '}
+        <Spin indicator={<LoadingOutlined style={{ fontSize: 24 }} spin />} />{' '}
       </span>
       Loading...please wait!
     </h1>

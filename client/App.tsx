@@ -1,4 +1,4 @@
-import { Route, Switch } from 'react-router-dom';
+import { Routes, Route } from 'react-router-dom';
 import React from 'react';
 
 import { PERMISSION } from '../config/menu';
@@ -8,11 +8,11 @@ import NotFound from './pages/NotFound';
 
 const App = () => (
   <MainLayout>
-    <Switch>
-      <Route exact path="/" component={Default} />
-      <Route exact path={PERMISSION.URL} component={Default} />
-      <Route component={NotFound} />
-    </Switch>
+    <Routes>
+      <Route path="/" element={<Default />} />
+      <Route path={PERMISSION.URL} element={<Default />} />
+      <Route path="*" element={<NotFound />} />
+    </Routes>
   </MainLayout>
 );
 

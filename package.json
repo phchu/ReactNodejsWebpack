@@ -3,13 +3,12 @@
   "version": "1.0.0",
   "main": "dist/server.bundle.js",
   "scripts": {
-    "start": "node dist/server.bundle.js",
-    "build:server": "yarn --cwd server build",
-    "build:client": "yarn --cwd client build",
-    "build": "run-p build:client build:server",
+    "start": "node server/app.js",
+    "dev:db": "docker compose up -d",
     "dev:server": "yarn --cwd server dev",
     "dev:client": "yarn --cwd client dev",
-    "dev": "run-p dev:server dev:client"
+    "dev": "yarn dev:db && run-p dev:server dev:client",
+    "stop": "docker compose down"
   },
   "workspaces": [
     "client",
@@ -19,17 +18,6 @@
   "license": "ISC",
   "private": true,
   "devDependencies": {
-    "@babel/core": "^7.7.2",
-    "@babel/plugin-proposal-class-properties": "^7.7.0",
-    "@babel/plugin-transform-runtime": "^7.6.2",
-    "@babel/polyfill": "^7.7.0",
-    "@babel/preset-env": "^7.7.1",
-    "@babel/preset-react": "^7.7.0",
-    "babel-eslint": "^10.0.3",
-    "babel-loader": "^8.0.6",
-    "babel-plugin-import": "^1.12.2",
-    "clean-webpack-plugin": "^4.0.0",
-    "dotenv-webpack": "^8.0.1",
     "eslint": "^6.6.0",
     "eslint-config-airbnb": "^18.0.1",
     "eslint-config-prettier": "^6.7.0",
@@ -37,17 +25,16 @@
     "eslint-plugin-jsx-a11y": "^6.2.3",
     "eslint-plugin-prettier": "^3.1.1",
     "eslint-plugin-react": "^7.16.0",
-    "mini-css-extract-plugin": "^2.7.6",
     "nodemon": "^3.0.2",
     "npm-run-all": "^4.1.5",
     "npm-run-all2": "^6.2.0",
-    "speed-measure-webpack-plugin": "^1.5.0",
-    "terser-webpack-plugin": "^5.3.9",
-    "webpack": "^5.94.0",
-    "webpack-auto-inject-version": "^1.2.2",
-    "webpack-bundle-analyzer": "^4.10.1",
-    "webpack-cli": "^5.1.4",
-    "webpack-dev-server": "^4.15.1",
-    "webpack-node-externals": "^3.0.0"
+    "typescript": "^6.0.3"
+  },
+  "dependencies": {
+    "braces": "3.0.3",
+    "fast-xml-parser": "4.4.1",
+    "follow-redirects": "1.15.6",
+    "micromatch": "4.0.8",
+    "ws": "7.5.10"
   }
 }

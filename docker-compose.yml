@@ -1,58 +1,23 @@
+version: '3.8'
+
 services:
-  mongo:
-    image: mongo:6.0.23
-    container_name: mongoDB
+  mongodb:
+    image: mongo:6.0
+    container_name: reactnodejs-mongodb
+    restart: unless-stopped
     ports:
-      - '27017:27017'
-    volumes:
-      - ${PWD}/../mongo-data:/data/db
-    networks:
-      - app-network
-
-  backend:
-    build:
-      context: .
-      dockerfile: Dockerfile
-    container_name: backend
-    volumes:
-      - .:/app
-      - /app/node_modules
-    ports:
-      - '8080:8080'
-    entrypoint: ['/bin/sh', '-c']
-    command:
-      - |
-        yarn install
-        yarn --cwd server dev
+      - "27017:27017"
     environment:
-      NODE_ENV: development
-      CHOKIDAR_USEPOLLING: 'true'
-    depends_on:
-      - mongo
-    networks:
-      - app-network
-
-  frontend:
-    build:
-      context: .
-      dockerfile: Dockerfile
-    container_name: frontend
+      MONGO_INITDB_DATABASE: graphql
     volumes:
-      - .:/app
-      - /app/node_modules
-    ports:
-      - '3000:3000'
-    entrypoint: ['/bin/sh', '-c']
-    command:
-      - |
-        yarn install
-        yarn --cwd client dev
-    environment:
-      NODE_ENV: development
-      CHOKIDAR_USEPOLLING: 'true' # Watch file changes by polling
+      - mongodb_data:/data/db
     networks:
       - app-network
 
 networks:
   app-network:
     driver: bridge
+
+volumes:
+  mongodb_data:
+    driver: local
