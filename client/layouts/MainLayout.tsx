@@ -1,6 +1,13 @@
 import React, { useEffect, useState } from 'react';
-import { Avatar, Breadcrumb, Dropdown, Icon, Layout, Menu, Modal } from 'antd';
-import { withRouter } from 'react-router-dom';
+import { Avatar, Breadcrumb, Dropdown, Layout, Menu, Modal } from 'antd';
+import {
+  SettingOutlined,
+  RightOutlined,
+  LogoutOutlined,
+  MenuUnfoldOutlined,
+  MenuFoldOutlined
+} from '@ant-design/icons';
+import { useNavigate, useLocation } from 'react-router-dom';
 import _ from 'lodash';
 import PropTypes from 'prop-types';
 
@@ -12,58 +19,58 @@ const { Header, Content, Footer, Sider } = Layout;
 const { SubMenu } = Menu;
 const { MAP } = MENU;
 const ORG_NAME = 'Organization';
-const ORG_ABBR = _.chain(ORG_NAME)
-  .head()
-  .toUpper()
-  .value();
-let defaultPath = _.head(MAP);
+const ORG_ABBR = _.chain(ORG_NAME).head().toUpper().value();
+let defaultPath: any = _.head(MAP);
 defaultPath =
-  defaultPath.SUB_MENU.length > 0
-    ? _.chain(defaultPath.SUB_MENU)
-        .head()
-        .get('URL')
-        .value()
-    : defaultPath.URL;
+  defaultPath && defaultPath.SUB_MENU && defaultPath.SUB_MENU.length > 0
+    ? _.chain(defaultPath.SUB_MENU).head().get('URL').value()
+    : defaultPath ? defaultPath.URL : '/';
+
 const { confirm } = Modal;
 
-const MainLayout = ({ location, history, children }) => {
+const iconMap: any = {
+  setting: <SettingOutlined />,
+  right: <RightOutlined />
+};
+
+const MainLayout = ({ children }) => {
+  const navigate = useNavigate();
+  const location = useLocation();
   const { pathname } = location;
+
   const initialState = {
     collapsed: false,
-    path:
-      pathname === '/'
-        ? _.words(defaultPath, /[^/]+/g)
-        : _.words(pathname, /[^/]+/g)
+    path: pathname === '/' ? _.words(defaultPath, /[^/]+/g) : _.words(pathname, /[^/]+/g)
   };
+
   const [{ auth }, dispatch] = useStore();
   const [state, setState] = useState(initialState);
   const { collapsed, path } = state;
+
   useEffect(() => {
     setState(initialState);
   }, [location.pathname]);
+
   const name = _.get(auth, 'user.name');
-  const altName = _.chain(name)
-    .head()
-    .toUpper()
-    .value();
-  const handleClick = e => {
+  const altName = _.chain(name).head().toUpper().value();
+
+  const handleClick = (e: any) => {
     const { key } = e;
     let URL = '/';
     for (let i = 0; i < MAP.length; i += 1) {
-      const item = MAP[i];
+      const item: any = MAP[i];
       const { SUB_MENU } = item;
-      const TARGET_URL = _.chain(SUB_MENU)
-        .keyBy('NAME')
-        .mapValues('URL')
-        .value();
+      const TARGET_URL = _.chain(SUB_MENU).keyBy('NAME').mapValues('URL').value();
       if (!_.isNil(TARGET_URL[key])) {
         URL = TARGET_URL[key];
-        history.push(URL);
+        navigate(URL);
         break;
       }
     }
   };
-  const toggle = () => setState({ collapsed: !collapsed });
+
+  const toggle = () => setState({ ...state, collapsed: !collapsed });
+
   const showConfirm = () => {
     confirm({
       title: 'Sign Out?',
@@ -74,7 +81,8 @@ const MainLayout = ({ location, history, children }) => {
       }
     });
   };
-  const handleMenuClick = e => {
+
+  const handleMenuClick = (e: any) => {
     const { key } = e;
     switch (key) {
       case 'logout':
@@ -84,16 +92,18 @@ const MainLayout = ({ location, history, children }) => {
         break;
     }
   };
+
   const menu = (
     <Menu onClick={handleMenuClick}>
       <Menu.Item key="logout">
-        <Icon type="logout" style={{ marginRight: '5px' }} />
+        <LogoutOutlined style={{ marginRight: '5px' }} />
         Logout
       </Menu.Item>
     </Menu>
   );
 
   const YEAR = new Date().getFullYear();
+
   return (
     <Layout style={{ minHeight: '100vh' }}>
       <Sider trigger={null} collapsible collapsed={collapsed}>
@@ -127,32 +137,30 @@ const MainLayout = ({ location, history, children }) => {
           defaultSelectedKeys={path}
           mode="inline"
         >
-          {_.map(MAP, (group, gid) => {
+          {_.map(MAP, (group: any, gid) => {
             const { NAME, ICON, ALIAS, SUB_MENU } = group;
-            let result = <div />;
+            let result = <div key={gid} />;
             if (_.get(SUB_MENU, 'length') > 0) {
               result = (
                 <SubMenu
                   key={NAME}
                   title={
                     <span>
-                      <Icon type={ICON} />
+                      {iconMap[ICON]}
                       <span>{ALIAS}</span>
                     </span>
                   }
                 >
-                  {_.map(SUB_MENU, item => {
+                  {_.map(SUB_MENU, (item: any) => {
                     const { NAME: SUB_NAME, ALIAS: SUB_ALIAS } = item;
-                    return (
-                      <Menu.Item key={`${SUB_NAME}`}>{SUB_ALIAS}</Menu.Item>
-                    );
+                    return <Menu.Item key={`${SUB_NAME}`}>{SUB_ALIAS}</Menu.Item>;
                   })}
                 </SubMenu>
               );
             } else {
               result = (
                 <Menu.Item key={gid}>
-                  <Icon type={ICON} />
+                  {iconMap[ICON]}
                   <span>{ALIAS}</span>
                 </Menu.Item>
               );
@@ -163,19 +171,15 @@ const MainLayout = ({ location, history, children }) => {
       </Sider>
       <Layout>
         <Header style={{ background: '#3c8dbc', paddingLeft: '16px' }}>
-          <Icon
-            className="trigger"
-            style={{ fontSize: 18, color: '#fff' }}
-            type={collapsed ? 'menu-unfold' : 'menu-fold'}
-            onClick={toggle}
-          />
+          {React.createElement(collapsed ? MenuUnfoldOutlined : MenuFoldOutlined, {
+            className: 'trigger',
+            style: { fontSize: 18, color: '#fff', cursor: 'pointer' },
+            onClick: toggle
+          })}
           <div style={{ float: 'right' }}>
             <Dropdown overlay={menu}>
               <div>
-                <Avatar
-                  alt={name}
-                  style={{ verticalAlign: 'middle', marginRight: '10px' }}
-                >
+                <Avatar alt={name} style={{ verticalAlign: 'middle', marginRight: '10px' }}>
                   {altName}
                 </Avatar>
                 <font color="white">{name}</font>
@@ -187,14 +191,12 @@ const MainLayout = ({ location, history, children }) => {
           <Breadcrumb style={{ margin: '16px 0' }}>
             {_.map(path, (item, index) => (
               <Breadcrumb.Item key={index}>
-                {_.get(MENU[_.toUpper(item)], 'ALIAS') &&
-                  MENU[_.toUpper(item)].ALIAS}
+                {_.get((MENU as any)[_.toUpper(item)], 'ALIAS') &&
+                  (MENU as any)[_.toUpper(item)].ALIAS}
               </Breadcrumb.Item>
             ))}
           </Breadcrumb>
-          <div style={{ padding: 24, background: '#fff', minHeight: 360 }}>
-            {children}
-          </div>
+          <div style={{ padding: 24, background: '#fff', minHeight: 360 }}>{children}</div>
         </Content>
         <Footer style={{ textAlign: 'center' }}>
           <strong>
@@ -208,9 +210,7 @@ const MainLayout = ({ location, history, children }) => {
 };
 
 MainLayout.propTypes = {
-  children: PropTypes.object.isRequired,
-  location: PropTypes.object.isRequired,
-  history: PropTypes.object.isRequired
+  children: PropTypes.object.isRequired
 };
 
-export default withRouter(MainLayout);
+export default MainLayout;
