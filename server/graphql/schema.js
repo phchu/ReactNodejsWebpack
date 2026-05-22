@@ -1,4 +1,4 @@
-import { gql } from 'apollo-server-express';
+import { gql } from 'graphql-tag';
 
 /**
  * GraphQL Schema that describes the main functionality of the API

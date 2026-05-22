@@ -42,18 +42,12 @@ const userSchema = new Schema(
  * Hashes the users password when saving it to DB
  */
 // eslint-disable-next-line func-names
-userSchema.pre('save', async function(next) {
-  try {
-    if (!this.isModified('password')) {
-      return next();
-    }
-    const salt = await bcrypt.genSalt(10);
-    const hashedPassword = await bcrypt.hash(this.password, salt);
-    this.password = hashedPassword;
-    return next();
-  } catch (err) {
-    return next(err);
+userSchema.pre('save', async function() {
+  if (!this.isModified('password')) {
+    return;
   }
+  const salt = await bcrypt.genSalt(10);
+  this.password = await bcrypt.hash(this.password, salt);
 });
 
 export default mongoose.model('User', userSchema);
