@@ -7,3 +7,8 @@ dist
 npm-debug.log
 *.pem
 *.pub
+
+# Environment variables
+.env
+.dev.env
+.prod.env
